@@ -22,7 +22,7 @@ COPY phpmyadminapp.conf /etc/apache2/conf-available/phpmyadminapp.conf
 RUN find /var/lib/mysql/mysql -exec touch -c -a {} + && service mysql restart \
  && mysql -uroot -e "CREATE USER 'test'@'localhost' IDENTIFIED BY 'test';" \
  && mysql -uroot -e "GRANT ALL PRIVILEGES ON *.* TO 'test'@'localhost'; FLUSH PRIVILEGES;" \
- && service apache2 start \ 
+ && service apache2 start 
 
 RUN cd /usr/share \
  && wget https://www.phpmyadmin.net/downloads/phpMyAdmin-latest-all-languages.zip -O phpmyadmin.zip \
