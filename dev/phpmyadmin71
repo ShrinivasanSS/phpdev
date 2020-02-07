@@ -1,0 +1,40 @@
+FROM ubuntu:18.04
+MAINTAINER sss <shrinivasan.s@zohocorp.com>
+
+############### Required to bypass php installation asking for geography and time-zone #######################
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get upgrade -y \
+	&& apt-get install -y software-properties-common apt-utils vim nano wget net-tools curl zip unzip apache2 bash mysql-server mysql-client \
+	&& apt-get update 
+
+RUN apt-get install -y software-properties-common \
+	&& add-apt-repository ppa:ondrej/php -y \
+	&& wget -q https://packages.sury.org/php/apt.gpg -O- | apt-key add - \
+	&& apt-get update \
+	&& apt-get install -y --force-yes php7.1 php7.1-mysql
+
+WORKDIR /var/www/html
+
+COPY phpmyadminapp.conf /etc/apache2/conf-available/phpmyadminapp.conf
+
+RUN find /var/lib/mysql/mysql -exec touch -c -a {} + && service mysql restart \
+ && mysql -uroot -e "CREATE USER 'test'@'localhost' IDENTIFIED BY 'test';" \
+ && mysql -uroot -e "GRANT ALL PRIVILEGES ON *.* TO 'test'@'localhost'; FLUSH PRIVILEGES;" \
+ && service apache2 start 
+
+COPY phpmyadmin.zip /usr/share/phpmyadmin.zip
+
+RUN cd /usr/share \
+ && unzip phpmyadmin.zip \ 
+ && mv phpMyAdmin-*-all-languages phpmyadminapp \ 
+ && chmod -R 0755 phpmyadminapp \ 
+ && mkdir /usr/share/phpmyadminapp/tmp/ \ 
+ && chown -R www-data:www-data /usr/share/phpmyadminapp/tmp/
+
+RUN a2enconf phpmyadminapp \
+	&& service apache2 start && service apache2 reload \ 
+	&& service apache2 restart
+
+CMD ["/bin/bash"]
