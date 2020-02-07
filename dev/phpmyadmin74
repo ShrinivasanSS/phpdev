@@ -23,7 +23,8 @@ RUN find /var/lib/mysql/mysql -exec touch -c -a {} + && service mysql restart \
  && mysql -uroot -e "CREATE USER 'test'@'localhost' IDENTIFIED BY 'test';" \
  && mysql -uroot -e "GRANT ALL PRIVILEGES ON *.* TO 'test'@'localhost'; FLUSH PRIVILEGES;" \
  && service apache2 start \ 
- && RUN cd /usr/share \
+
+RUN cd /usr/share \
  && wget https://www.phpmyadmin.net/downloads/phpMyAdmin-latest-all-languages.zip -O phpmyadmin.zip \
  && unzip phpmyadmin.zip \ 
  && mv phpMyAdmin-*-all-languages phpmyadminapp \ 
