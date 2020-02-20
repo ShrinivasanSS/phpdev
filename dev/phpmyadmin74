@@ -1,5 +1,5 @@
 FROM ubuntu:18.04
-MAINTAINER sss <shrinivasan.s@zohocorp.com>
+MAINTAINER sss
 
 ############### Required to bypass php installation asking for geography and time-zone #######################
 
