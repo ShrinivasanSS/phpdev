@@ -31,10 +31,12 @@ RUN cd /usr/share \
  && mv phpMyAdmin-*-all-languages phpmyadminapp \ 
  && chmod -R 0755 phpmyadminapp \ 
  && mkdir /usr/share/phpmyadminapp/tmp/ \ 
- && chown -R www-data:www-data /usr/share/phpmyadminapp/tmp/
+ && chown -R www-data:www-data /usr/share/phpmyadminapp/tmp/ \
  && cd /var/www/html \
  && wget https://wordpress.org/latest.zip \
- && unzip latest.zip
+ && unzip latest.zip \
+ && chmod -R 0755 wordpress \
+ && chown -R www-data:www-data /var/www/html/wordpress/ 
 
 RUN a2enconf phpmyadminapp \
 	&& service apache2 start && service apache2 reload \ 
